@@ -40,3 +40,6 @@ figure(3)
 plot(S_est)
 grid()
 title("Correlogramme")
+
+%faire correlog, peridogramme, periodogramme moyenne, puis moyenn et
+%fenetre
