@@ -29,13 +29,36 @@ title("Correlogramme")
 %faire correlog, peridogramme, periodogramme moyenne, puis moyenn et
 %fenetre
 
-%% peridogramme
+%% periodogramme bruit blanc
 
-perido = (1/N) * (abs(fft(bruit)).^2);
+p_bruitBlanc = periodogramme(bruit, N);
 figure(4)
-plot(perido)
+plot(p_bruitBlanc)
 grid()
 title("Periodogramme du bruit")
+
+
+
+
+%% periodogramme bruit blanc + cos
+
+a1 = 1;
+a2 = 0.2;
+f1 = 0.05; %Hz
+f2 = 0.06;
+
+s1 = a1 * cos(2 * pi * f1 * n_aff);
+s2 = a2 * cos(2 * pi * f2 * n_aff);
+
+signal = bruit + s1 + s2;
+
+p_signal = periodogramme(signal, N);
+
+figure(5)
+plot(p_signal)
+grid()
+title("Periodogramme du bruit blanc + 2 cos")
+legend("périodogramme")
 %% debug avec fonctions matlab
 % figure(4)
 % [rho, lags] = xcorr(bruit);
@@ -45,20 +68,3 @@ title("Periodogramme du bruit")
 % figure(5)
 % S = fft(rho(N:end));
 % plot(abs(S))
-
-%% eqm
-figure(5)
-hold on
-for i = 1:10
-    newBruit = randn(N, 1) * sigma;
-    newR_est = autocorrel(newBruit, N);
-    newS_est = fft(newR_est);
-    newPeriod = periodogramme(newBruit, N);
-    
-    %faire eqm
-    e = newPeriod - newS_est';
-    eq = abs(e).^2;
-    eqm = eq/length(eq);
-    plot(eqm)
-end
-grid()
