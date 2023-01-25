@@ -7,20 +7,17 @@ bruit = sigma*randn(N, 1);
 
 
 %% correlogramme
-for k = 0:N-1
-    R_est(k+1) = sum(bruit(1+k:end) .* conj(bruit(1:end-k))) / N;
-end
-
-S_est = fft(R_est);
+R_est = autocorrel(bruit, N);
+S_est = fft(R_est); %correlogramme
 
 figure(1)
-stem(bruit)
+stem(bruit, '.')
 grid()
 title("Bruit")
 
 n_aff = (0:N-1)';
 figure(2)
-stem(n_aff, R_est)
+stem(n_aff, R_est, '.')
 grid()
 title("Auto correlation estimee du bruit")
 
@@ -32,6 +29,13 @@ title("Correlogramme")
 %faire correlog, peridogramme, periodogramme moyenne, puis moyenn et
 %fenetre
 
+%% peridogramme
+
+perido = (1/N) * (abs(fft(bruit)).^2);
+figure(4)
+plot(perido)
+grid()
+title("Periodogramme du bruit")
 %% debug avec fonctions matlab
 % figure(4)
 % [rho, lags] = xcorr(bruit);
@@ -41,3 +45,20 @@ title("Correlogramme")
 % figure(5)
 % S = fft(rho(N:end));
 % plot(abs(S))
+
+%% eqm
+figure(5)
+hold on
+for i = 1:10
+    newBruit = randn(N, 1) * sigma;
+    newR_est = autocorrel(newBruit, N);
+    newS_est = fft(newR_est);
+    newPeriod = periodogramme(newBruit, N);
+    
+    %faire eqm
+    e = newPeriod - newS_est';
+    eq = abs(e).^2;
+    eqm = eq/length(eq);
+    plot(eqm)
+end
+grid()
