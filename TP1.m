@@ -53,12 +53,17 @@ s2 = a2 * cos(2 * pi * f2 * n_aff);
 signal = bruit + s1 + s2;
 
 p_signal = periodogramme(signal, N);
+p_signalFenetre = periodogramme(signal .* hann(N), N);
 
 figure(5)
+subplot(2, 1, 1)
 plot(p_signal)
 grid()
 title("Periodogramme du bruit blanc + 2 cos")
-legend("périodogramme")
+subplot(2,1,2)
+plot(p_signalFenetre)
+grid()
+title("Periodogramme fenetre")
 %% debug avec fonctions matlab
 % figure(4)
 % [rho, lags] = xcorr(bruit);
